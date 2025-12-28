@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.curriculum.mapper.StudentCourseMapper">
+
+    <resultMap id="StudentCourseResultMap" type="StudentCourse">
+        <id property="id" column="id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="weekday" column="weekday"/>
+        <result property="timeSlot" column="time_slot"/>
+        <result property="createTime" column="create_time"/>
+        <result property="courseName" column="course_name"/>
+        <result property="teacher" column="teacher"/>
+        <result property="classroom" column="classroom"/>
+    </resultMap>
+
+    <select id="selectByStudentId" resultMap="StudentCourseResultMap">
+        SELECT sc.*, c.course_name, c.teacher, c.classroom
+        FROM student_course sc
+        LEFT JOIN course c ON sc.course_id = c.course_id
+        WHERE sc.student_id = #{studentId}
+        ORDER BY sc.weekday, sc.time_slot
+    </select>
+
+    <select id="selectByStudentIdAndWeekday" resultMap="StudentCourseResultMap">
+        SELECT sc.*, c.course_name, c.teacher, c.classroom
+        FROM student_course sc
+        LEFT JOIN course c ON sc.course_id = c.course_id
+        WHERE sc.student_id = #{studentId} AND sc.weekday = #{weekday}
+        ORDER BY sc.time_slot
+    </select>
+
+    <select id="selectByStudentIdAndTime" resultMap="StudentCourseResultMap">
+        SELECT sc.*, c.course_name, c.teacher, c.classroom
+        FROM student_course sc
+        LEFT JOIN course c ON sc.course_id = c.course_id
+        WHERE sc.student_id = #{studentId} 
+          AND sc.weekday = #{weekday}
+          AND sc.time_slot = #{timeSlot}
+    </select>
+
+    <insert id="insert" parameterType="StudentCourse" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO student_course (student_id, course_id, weekday, time_slot)
+        VALUES (#{studentId}, #{courseId}, #{weekday}, #{timeSlot})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM student_course WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByStudentId">
+        DELETE FROM student_course WHERE student_id = #{studentId}
+    </delete>
+
+</mapper>
+

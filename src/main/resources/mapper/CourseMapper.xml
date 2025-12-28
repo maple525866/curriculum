@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.curriculum.mapper.CourseMapper">
+
+    <resultMap id="CourseResultMap" type="Course">
+        <id property="courseId" column="course_id"/>
+        <result property="courseName" column="course_name"/>
+        <result property="teacher" column="teacher"/>
+        <result property="classroom" column="classroom"/>
+        <result property="credit" column="credit"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="CourseResultMap">
+        SELECT * FROM course ORDER BY course_id
+    </select>
+
+    <select id="selectById" resultMap="CourseResultMap">
+        SELECT * FROM course WHERE course_id = #{courseId}
+    </select>
+
+    <select id="selectByCourseName" resultMap="CourseResultMap">
+        SELECT * FROM course WHERE course_name = #{courseName}
+    </select>
+
+    <insert id="insert" parameterType="Course" useGeneratedKeys="true" keyProperty="courseId">
+        INSERT INTO course (course_name, teacher, classroom, credit)
+        VALUES (#{courseName}, #{teacher}, #{classroom}, #{credit})
+    </insert>
+
+    <update id="update" parameterType="Course">
+        UPDATE course
+        SET course_name = #{courseName},
+            teacher = #{teacher},
+            classroom = #{classroom},
+            credit = #{credit}
+        WHERE course_id = #{courseId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM course WHERE course_id = #{courseId}
+    </delete>
+
+</mapper>
+
