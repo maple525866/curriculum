@@ -31,6 +31,13 @@
         ORDER BY sc.time_slot
     </select>
 
+    <select id="selectById" resultMap="StudentCourseResultMap">
+        SELECT sc.*, c.course_name, c.teacher, c.classroom
+        FROM student_course sc
+        LEFT JOIN course c ON sc.course_id = c.course_id
+        WHERE sc.id = #{id}
+    </select>
+
     <select id="selectByStudentIdAndTime" resultMap="StudentCourseResultMap">
         SELECT sc.*, c.course_name, c.teacher, c.classroom
         FROM student_course sc

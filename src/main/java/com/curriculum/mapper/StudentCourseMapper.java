@@ -26,6 +26,11 @@ public interface StudentCourseMapper {
     );
     
     /**
+     * 根据ID查询课程安排
+     */
+    StudentCourse selectById(@Param("id") Integer id);
+    
+    /**
      * 检查时间冲突
      */
     StudentCourse selectByStudentIdAndTime(

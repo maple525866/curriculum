@@ -39,7 +39,7 @@ public class CurriculumApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         System.out.println("\n╔═══════════════════════════════════════╗");
-        System.out.println("║      欢迎使用课程表管理系统           ║");
+        System.out.println("║      欢迎使用课程表管理系统               ║");
         System.out.println("╚═══════════════════════════════════════╝\n");
 
         while (true) {
@@ -91,7 +91,8 @@ public class CurriculumApplication implements CommandLineRunner {
             System.out.println("├─────────────────────────────────────┤");
             System.out.println("│  1. 查看所有学生                     │");
             System.out.println("│  2. 添加学生                         │");
-            System.out.println("│  3. 删除学生                         │");
+            System.out.println("│  3. 更新学生信息                     │");
+            System.out.println("│  4. 删除学生                         │");
             System.out.println("│  0. 返回主菜单                       │");
             System.out.println("└─────────────────────────────────────┘");
             System.out.print("请选择：");
@@ -106,6 +107,9 @@ public class CurriculumApplication implements CommandLineRunner {
                     addStudent();
                     break;
                 case "3":
+                    updateStudent();
+                    break;
+                case "4":
                     deleteStudent();
                     break;
                 case "0":
@@ -174,6 +178,57 @@ public class CurriculumApplication implements CommandLineRunner {
     }
 
     /**
+     * 更新学生信息
+     */
+    private void updateStudent() {
+        System.out.print("\n请输入要更新的学生ID：");
+        String idStr = scanner.nextLine().trim();
+        
+        try {
+            Integer studentId = Integer.parseInt(idStr);
+            Student student = studentService.getStudentById(studentId);
+            if (student == null) {
+                System.out.println("\n❌ 学生不存在！");
+                return;
+            }
+            
+            System.out.println("\n当前学生信息：");
+            System.out.println("姓名：" + student.getStudentName());
+            System.out.println("学号：" + student.getStudentNo());
+            System.out.println("班级ID：" + student.getClassId() + " (" + student.getGradeName() + " " + student.getClassName() + ")");
+            
+            System.out.println("\n--- 请输入新的信息（直接回车保持不变） ---");
+            
+            System.out.print("新的学生姓名：");
+            String newName = scanner.nextLine().trim();
+            if (!newName.isEmpty()) {
+                student.setStudentName(newName);
+            }
+            
+            System.out.print("新的学号：");
+            String newStudentNo = scanner.nextLine().trim();
+            if (!newStudentNo.isEmpty()) {
+                student.setStudentNo(newStudentNo);
+            }
+            
+            System.out.print("新的班级ID：");
+            String newClassIdStr = scanner.nextLine().trim();
+            if (!newClassIdStr.isEmpty()) {
+                Integer newClassId = Integer.parseInt(newClassIdStr);
+                student.setClassId(newClassId);
+            }
+            
+            if (studentService.updateStudent(student)) {
+                System.out.println("\n✓ 学生信息更新成功！");
+            } else {
+                System.out.println("\n❌ 学生信息更新失败！");
+            }
+        } catch (Exception e) {
+            System.out.println("\n❌ 输入有误：" + e.getMessage());
+        }
+    }
+
+    /**
      * 删除学生
      */
     private void deleteStudent() {
@@ -213,7 +268,8 @@ public class CurriculumApplication implements CommandLineRunner {
             System.out.println("├─────────────────────────────────────┤");
             System.out.println("│  1. 查看所有课程                     │");
             System.out.println("│  2. 添加课程                         │");
-            System.out.println("│  3. 删除课程                         │");
+            System.out.println("│  3. 更新课程信息                     │");
+            System.out.println("│  4. 删除课程                         │");
             System.out.println("│  0. 返回主菜单                       │");
             System.out.println("└─────────────────────────────────────┘");
             System.out.print("请选择：");
@@ -228,6 +284,9 @@ public class CurriculumApplication implements CommandLineRunner {
                     addCourse();
                     break;
                 case "3":
+                    updateCourse();
+                    break;
+                case "4":
                     deleteCourse();
                     break;
                 case "0":
@@ -300,6 +359,64 @@ public class CurriculumApplication implements CommandLineRunner {
     }
 
     /**
+     * 更新课程信息
+     */
+    private void updateCourse() {
+        System.out.print("\n请输入要更新的课程ID：");
+        String idStr = scanner.nextLine().trim();
+        
+        try {
+            Integer courseId = Integer.parseInt(idStr);
+            Course course = courseService.getCourseById(courseId);
+            if (course == null) {
+                System.out.println("\n❌ 课程不存在！");
+                return;
+            }
+            
+            System.out.println("\n当前课程信息：");
+            System.out.println("课程名称：" + course.getCourseName());
+            System.out.println("授课教师：" + course.getTeacher());
+            System.out.println("教室：" + course.getClassroom());
+            System.out.println("学分：" + course.getCredit());
+            
+            System.out.println("\n--- 请输入新的信息（直接回车保持不变） ---");
+            
+            System.out.print("新的课程名称：");
+            String newCourseName = scanner.nextLine().trim();
+            if (!newCourseName.isEmpty()) {
+                course.setCourseName(newCourseName);
+            }
+            
+            System.out.print("新的授课教师：");
+            String newTeacher = scanner.nextLine().trim();
+            if (!newTeacher.isEmpty()) {
+                course.setTeacher(newTeacher);
+            }
+            
+            System.out.print("新的教室：");
+            String newClassroom = scanner.nextLine().trim();
+            if (!newClassroom.isEmpty()) {
+                course.setClassroom(newClassroom);
+            }
+            
+            System.out.print("新的学分：");
+            String newCreditStr = scanner.nextLine().trim();
+            if (!newCreditStr.isEmpty()) {
+                BigDecimal newCredit = new BigDecimal(newCreditStr);
+                course.setCredit(newCredit);
+            }
+            
+            if (courseService.updateCourse(course)) {
+                System.out.println("\n✓ 课程信息更新成功！");
+            } else {
+                System.out.println("\n❌ 课程信息更新失败！");
+            }
+        } catch (Exception e) {
+            System.out.println("\n❌ 输入有误：" + e.getMessage());
+        }
+    }
+
+    /**
      * 删除课程
      */
     private void deleteCourse() {
@@ -339,7 +456,8 @@ public class CurriculumApplication implements CommandLineRunner {
             System.out.println("├─────────────────────────────────────┤");
             System.out.println("│  1. 查看学生课程表                   │");
             System.out.println("│  2. 为学生添加课程                   │");
-            System.out.println("│  3. 删除学生的课程                   │");
+            System.out.println("│  3. 修改课程时间                     │");
+            System.out.println("│  4. 删除学生的课程                   │");
             System.out.println("│  0. 返回主菜单                       │");
             System.out.println("└─────────────────────────────────────┘");
             System.out.print("请选择：");
@@ -354,6 +472,9 @@ public class CurriculumApplication implements CommandLineRunner {
                     addCourseToStudent();
                     break;
                 case "3":
+                    updateCourseTime();
+                    break;
+                case "4":
                     removeCourseFromStudent();
                     break;
                 case "0":
@@ -416,6 +537,66 @@ public class CurriculumApplication implements CommandLineRunner {
                 System.out.println("\n✓ 课程添加成功！");
             } else {
                 System.out.println("\n❌ 课程添加失败！");
+            }
+        } catch (Exception e) {
+            System.out.println("\n❌ 输入有误：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 修改课程时间
+     */
+    private void updateCourseTime() {
+        System.out.print("\n请输入学生ID：");
+        String studentIdStr = scanner.nextLine().trim();
+        
+        try {
+            Integer studentId = Integer.parseInt(studentIdStr);
+            List<StudentCourse> courses = curriculumService.getStudentCourses(studentId);
+            
+            if (courses.isEmpty()) {
+                System.out.println("\n该学生暂无课程！");
+                return;
+            }
+            
+            System.out.println("\n学生的课程列表：");
+            System.out.println("─────────────────────────────────────────────────");
+            for (StudentCourse sc : courses) {
+                String[] weekdays = {"", "周一", "周二", "周三", "周四", "周五", "周六", "周日"};
+                System.out.printf("ID: %-3d | %s 第%2d节 | %s\n",
+                    sc.getId(),
+                    weekdays[sc.getWeekday()],
+                    sc.getTimeSlot(),
+                    sc.getCourseName());
+            }
+            System.out.println("─────────────────────────────────────────────────");
+            
+            System.out.print("\n请输入要修改的课程记录ID：");
+            String idStr = scanner.nextLine().trim();
+            Integer id = Integer.parseInt(idStr);
+            
+            System.out.print("请输入新的星期几 (1-7)：");
+            String newWeekdayStr = scanner.nextLine().trim();
+            Integer newWeekday = Integer.parseInt(newWeekdayStr);
+            
+            System.out.print("请输入新的第几节课 (1-12)：");
+            String newTimeSlotStr = scanner.nextLine().trim();
+            Integer newTimeSlot = Integer.parseInt(newTimeSlotStr);
+            
+            if (newWeekday < 1 || newWeekday > 7) {
+                System.out.println("\n❌ 星期数必须在1-7之间！");
+                return;
+            }
+            
+            if (newTimeSlot < 1 || newTimeSlot > 12) {
+                System.out.println("\n❌ 节次必须在1-12之间！");
+                return;
+            }
+            
+            if (curriculumService.updateCourseTime(id, newWeekday, newTimeSlot)) {
+                System.out.println("\n✓ 课程时间修改成功！");
+            } else {
+                System.out.println("\n❌ 课程时间修改失败！");
             }
         } catch (Exception e) {
             System.out.println("\n❌ 输入有误：" + e.getMessage());

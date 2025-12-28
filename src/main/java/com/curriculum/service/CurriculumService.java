@@ -62,6 +62,40 @@ public class CurriculumService {
     }
     
     /**
+     * 修改课程时间
+     */
+    @Transactional
+    public boolean updateCourseTime(Integer id, Integer newWeekday, Integer newTimeSlot) {
+        // 查询当前课程安排
+        StudentCourse studentCourse = studentCourseMapper.selectById(id);
+        
+        if (studentCourse == null) {
+            System.out.println("课程安排不存在！");
+            return false;
+        }
+        
+        // 检查新时间是否冲突（排除自己）
+        StudentCourse conflict = studentCourseMapper.selectByStudentIdAndTime(
+            studentCourse.getStudentId(), newWeekday, newTimeSlot);
+        
+        if (conflict != null && !conflict.getId().equals(id)) {
+            System.out.println("新时间段已有课程：" + conflict.getCourseName());
+            return false;
+        }
+        
+        // 先删除旧记录，再插入新记录（因为有唯一索引）
+        studentCourseMapper.deleteById(id);
+        
+        StudentCourse newStudentCourse = new StudentCourse();
+        newStudentCourse.setStudentId(studentCourse.getStudentId());
+        newStudentCourse.setCourseId(studentCourse.getCourseId());
+        newStudentCourse.setWeekday(newWeekday);
+        newStudentCourse.setTimeSlot(newTimeSlot);
+        
+        return studentCourseMapper.insert(newStudentCourse) > 0;
+    }
+    
+    /**
      * 删除学生的某个课程
      */
     @Transactional
